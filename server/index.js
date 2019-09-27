@@ -15,7 +15,10 @@ app.use(session({
 }))
 
 
-app.post('/aut/register', authCtrl.register)
+app.post('/auth/register', authCtrl.register)
+app.post('/auth/login', authCtrl.login)
+app.delete('/auth/login', authCtrl.logout)
+app.get('/auth/user', authCtrl.getUser)
 
 massive(CONNECTION_STRING).then(db => {
     app.set('db', db)
