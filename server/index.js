@@ -3,6 +3,7 @@ const express = require('express')
 const session = require('express-session')
 const massive = require('massive')
 const {SESSION_SECRET, SERVER_PORT, CONNECTION_STRING} = process.env
+const authCtrl = require('./controllers/authController')
 
 const app = express()
 
@@ -13,6 +14,8 @@ app.use(session({
     secret: SESSION_SECRET
 }))
 
+
+app.post('/aut/register', authCtrl.register)
 
 massive(CONNECTION_STRING).then(db => {
     app.set('db', db)
