@@ -1,65 +1,76 @@
+//create the initial state
 const initialState = {
-    loggedIn: false,
-    user: null,
-    posts: [],
+    user:{},
+    allPosts: [],
     currentPost: {}
 }
 
-const UPDATE_USER = 'UPDATE_USER'
-const SEARCH_USER = 'SEARCH_USER'
+//action types
+const ADD_USER = 'ADD_USER'
+const SEARCH_USERS = 'SEARCH_USERS'
 const SELECT_POST = 'SELECT_POST'
-const UPDATE_POST = 'UPDATE_POST'
+const UPDATE_POSTS = 'UPDATE_POSTS'
 const RELOAD_USER = 'RELOAD_USER'
 
-export const updateUser = (userObj) => {
+//actions builder {dispatchers}
+export function addUser(userInfo){
     return {
-        type: UPDATE_USER,
-        payload: userObj
+        type: ADD_USER,
+        payload: userInfo
     }
 }
 
-export const searchUser = (input) => {
-    return {
-        type: SEARCH_USER,
-        payload: input
-    }
-}
-
-export const selectPost = (post) => {
+export function selectPost(post){
+    console.log(SELECT_POST)
     return {
         type: SELECT_POST,
         payload: post
     }
 }
 
-export const updatePost = (post) => {
+export function updatePosts(posts){
+    console.log(UPDATE_POSTS)
     return {
-        type: UPDATE_POST,
-        payload: post
+        type: UPDATE_POSTS,
+        payload: posts
     }
 }
 
-export const reloadUser = (user) => {
+export function searchUsers(input){
+    return {
+        type: SEARCH_USERS,
+        payload: input
+    }
+}
+
+export function reloadUser(user){
     return {
         type: RELOAD_USER,
         payload: user
     }
 }
 
-const reducer = (state = initialState, action) => {
+//reducer
+export default function reducer(state = initialState, action){
+    console.log(action)
     switch(action.type){
-        case UPDATE_USER:
-            return {...state, user: action.payload, posts: action.payload}
+        case ADD_USER:
+            const {user, allPosts} = action.payload
+            console.log(user, allPosts)
+            return {...state, user, allPosts}
         case RELOAD_USER:
-            return {...state, user: action.payload}
-        case UPDATE_POST:
-            return {...state, post: action.payload}
+            return {...state, user:action.payload}
+        case UPDATE_POSTS:
+                return {...state, allPosts:action.payload}
         case SELECT_POST:
-            return {...state, post: action.payload}
-        case SEARCH_USER:
+            return {...state, currentPost: action.payload}
+        case SEARCH_USERS:
             return state
-        default: return state
+        default:
+            return state
     }
 }
 
-export default reducer
+
+
+

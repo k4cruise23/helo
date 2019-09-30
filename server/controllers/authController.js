@@ -1,34 +1,57 @@
 const bcrypt = require('bcryptjs')
 
+
 module.exports = {
-    async register(req, res){
-        const db = req.app.get('db')
-        const {username, password} = req.body
-        const user = await db.find_username(username)
-        if (user[0]) return res.status(200).send({message: 'Username already in use.'})
-        const salt = bcrypt.genSaltSync(10)
-        const hash = bcrypt.hashSync(password, salt)
-        const newUser = await db.add_user([username, `https://robohash.org/${username}.png`], hash)
-        delete newUser[0].password
-        req.session.user = newUser[0]
-        const allPosts = await db.get_posts()
-        res.status(200).send({allPosts, user: user[0]})
-    },
-    async login(req, res){
-        const {username, password} = req.body
-        const db = req.app.get('db')
-        const user = await db.find_username([username])
-        if (!user[0]) return res.status(200).send({message: 'Username not found.'})
-        const result = bcrypt.compareSync(password, user[0].hash)
-        if (!result) return res.status(200).send({message: 'Incorrect passowrd.'})
-        req.session.user = {username, password}
-        res.status(200).send({message: 'Logged in', user: req.session.user, loggedIn: true})
-    },
-    logout(req, res){
-        req.session.destroy()
-        res.status(200).send({message: 'Logged out', loggedIn: false})
-    },
-    getUser(req, res){
-        res.status(200).send(req.session.user)
-    }
+async register(req, res){
+    const {username, password} = req.body
+    const db = req.app.get('db')
+    const foundUser = await db.find_user([username])
+    //does found user exist?
+    if(foundUser[0]) return res.status(409).send('Sorry, username is already taken') 
+    //create a salt and hash for the password
+    const passwordSalt = bcrypt.genSaltSync(15)
+    const passwordHash = bcrypt.hashSync(password, passwordSalt)
+    //register the user
+    const newUser = await db.register_user([username, `https://robohash.org/${username}.png`, passwordHash])
+    //delete new user password
+    delete newUser[0].password
+    //store user info on the session
+    req.session.user = newUser[0]
+     //create user obj
+     const allPosts = await db.get_all_posts()
+     res.status(200).send({allPosts, user:foundUser[0]})
+},
+
+async login(req, res) {
+    const {username, password} = req.body
+    const db = req.app.get('db')
+    const foundUser = await db.find_user([username])
+    //see if username exists
+    if(!foundUser[0]) return res.status(409).send('Username does not exist')
+    //see if user is auth
+    const authPass = bcrypt.compareSync(password, foundUser[0].password)
+
+    if(authPass) {
+        //remove the password
+        delete foundUser[0].password
+        //store user onto the session
+        req.session.user = foundUser[0]
+        //create user obj
+        const allPosts = await db.get_all_posts()
+        res.status(200).send({allPosts, user:foundUser[0]})
+        
+    } else return res.status(401).send('Incorrect password')
+},
+
+ logout (req, res) {
+    //destory the session
+    req.session.destroy()
+    res.status(200).send('user has been logged out')
+},
+
+getUser (req, res) {
+    res.status(200).send(req.session.user)
 }
+}
+
+
