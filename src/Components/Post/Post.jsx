@@ -7,7 +7,7 @@ import {selectPost} from '../../ducks/reducer'
 
 class Post extends Component {
     componentDidMount(){
-        console.log(this.props.match)
+        // console.log(this.props.match)
         axios.get(`/api/post/${this.props.match.params.postid}`).then(res => {
             console.log(res.data)
             this.props.selectPost(res.data)

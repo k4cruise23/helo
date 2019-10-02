@@ -13,20 +13,23 @@ async register(req, res){
     const passwordHash = bcrypt.hashSync(password, passwordSalt)
     //register the user
     const newUser = await db.register_user([username, `https://robohash.org/${username}.png`, passwordHash])
+    console.log(newUser)
     //delete new user password
     delete newUser[0].password
     //store user info on the session
     req.session.user = newUser[0]
      //create user obj
-     const allPosts = await db.get_all_posts()
-     res.status(200).send({allPosts, user:foundUser[0]})
+    //  const allPosts = await db.get_all_posts()
+     res.status(200).send(newUser)
 },
 
 async login(req, res) {
     const {username, password} = req.body
+    // console.log('hit', username, password)
     const db = req.app.get('db')
     const foundUser = await db.find_user([username])
     //see if username exists
+    // console.log(foundUser)
     if(!foundUser[0]) return res.status(409).send('Username does not exist')
     //see if user is auth
     const authPass = bcrypt.compareSync(password, foundUser[0].password)

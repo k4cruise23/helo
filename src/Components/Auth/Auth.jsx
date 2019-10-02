@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-
 import {connect} from 'react-redux'
-
 import './Auth.css'
 
 //account builders
@@ -31,7 +29,7 @@ class Auth extends Component {
     }
 
     handleInput = (e) => {
-        console.log(e.target.value)
+        // console.log(e.target.value)
         this.setState({
             [e.target.name]: e.target.value
         })
@@ -39,36 +37,41 @@ class Auth extends Component {
 
     login = () => {
         const {username, password} = this.state
+        // console.log(username, password)
         axios.post('/auth/login', {username, password})
             .then(res => {
                 //add account to the redux
-                console.log(res.data)
                 this.props.addUser(res.data)
                 //redirect
                 this.props.history.push('/dashboard')
-            }).catch(error => {
-                this.setState({
-                    error: true,
-                    errorMessage: error.response.data
-                })
             })
+            // .catch(error => {
+            //     console.log(error)
+            //     this.setState({
+            //         error: true,
+            //         errorMessage: error
+            //     })
+            // })
     }
 
     register = () => {
+        // console.log('props', this.props)
         const {username, password} = this.state
         axios.post('/auth/register', {username, password})
-            .then(res => {
+        .then(res => {
+            // console.log('response', res.data)
                 //add account to the redux
                 // console.log(res.data)
-                this.props.addUser(res.data)
+                this.props.addUser(res.data[0])
                 //redirect
                 this.props.history.push('/dashboard')
-            }).catch(error => {
-                this.setState({
-                    error: true,
-                    errorMessage: error.response.data
-                })
             })
+            // .catch(error => {
+            //     this.setState({
+            //         error: true,
+            //         errorMessage: error
+            //     })
+            // })
     }
 
     render() {

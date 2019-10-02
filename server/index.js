@@ -26,6 +26,7 @@ app.get('/auth/user', authCtrl.getUser)
 app.get('/api/post/getAll', postCtrl.getPosts)
 app.get('/api/post/:id', postCtrl.getPost)
 app.post('/api/post/add', postCtrl.addPost)
+app.get('/api/posts', postCtrl.searchPost)
 
 massive(CONNECTION_STRING).then(db => {
     app.set('db', db)

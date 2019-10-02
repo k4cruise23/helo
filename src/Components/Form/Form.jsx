@@ -19,7 +19,7 @@ class Form extends Component {
     }
 
     handleInput = (e) => {
-        console.log(e.target.value)
+        // console.log(e.target.value)
         this.setState({
             [e.target.name]: e.target.value
         })
@@ -28,9 +28,9 @@ class Form extends Component {
     submitPost = () => {
         const {title, imageURL, content} = this.state
         const addPost = {...this.props.user, title, imageURL, content}
-        console.log(addPost)
+        // console.log(addPost)
         axios.post('/api/post/add', addPost).then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             this.props.updatePosts(res.data)
             this.props.history.push('/dashboard')
         })
@@ -40,7 +40,9 @@ class Form extends Component {
         return (
             <div className='form-background'>
                 <div className='form-container'>
+                    <span>
                     <h3 className="new-post">NEW POST</h3>
+                    </span>
                     <div className="form">
                         <div className='form-input'>
                             <label>Title</label>

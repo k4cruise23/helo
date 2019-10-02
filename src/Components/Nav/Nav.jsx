@@ -21,12 +21,17 @@ import {reloadUser} from '../../ducks/reducer'
     }
 
     render() {
+        // console.log('hit', this.props.user)
         return (
             <div className="fixed-div-container">
                 <div className="nav-bar-container">
                     <div className="nav-bar-top-items">
-                        <div className="profile-name">
-                            <img className='profile-picture' src={this.props.user.profileimage} alt=''/>
+                        <div className="profile-name"> 
+                        {this.props.user.profileimage ?
+                        <img className='profile-picture' src={this.props.user.profileimage} alt=''/>
+                        :
+                        null
+                    }
                             <h1>{this.props.user.username}</h1>
                         </div>
                         <div className="home-create">
